@@ -5,7 +5,7 @@ module Payments
     cover Order
 
     test "request payment" do
-      with_aggregate("order-123") { |order| order.request_payment("order-123", 300) }
+      with_aggregate("order-123") { |order| order.request_payment(300) }
 
       assert_expected_events_in_stream(
         event_store,
@@ -16,8 +16,8 @@ module Payments
 
     test "register payment" do
       with_aggregate("order-123") do |order|
-        order.request_payment("order-123", 300)
-        order.register_payment("order-123", 300)
+        order.request_payment(300)
+        order.register_payment(300)
       end
 
       assert_expected_events_in_stream(
@@ -32,32 +32,33 @@ module Payments
 
     test "full amount paid" do
       with_aggregate("order-123") do |order|
-        order.request_payment("order-123", 300)
-        order.register_payment("order-123", 300)
+        order.request_payment(300)
+        order.register_payment(300)
+
         assert order.paid?
       end
     end
 
     test "too much paid" do
       with_aggregate("order-123") do |order|
-        order.request_payment("order-123", 300)
-        order.register_payment("order-123", 301)
+        order.request_payment(300)
+        order.register_payment(301)
+
         assert order.paid?
       end
     end
 
     test "too little paid" do
       with_aggregate("order-123") do |order|
-        order.request_payment("order-123", 300)
-        order.register_payment("order-123", 299)
+        order.request_payment(300)
+        order.register_payment(299)
+
         refute order.paid?
       end
     end
 
     test "payment not yet requested" do
-      with_aggregate("order-123") do |order|
-        refute order.paid?
-      end
+      with_aggregate("order-123") { |order| refute order.paid? }
     end
 
     private
@@ -65,7 +66,7 @@ module Payments
     def with_aggregate(order_id)
       Infra::AggregateRootRepository
         .new(event_store)
-        .with_aggregate(Order.new, "Payments::Order$#{order_id}") { |order| yield order }
+        .with_aggregate(Order.new(order_id), "Payments::Order$#{order_id}") { |order| yield order }
     end
   end
 end
