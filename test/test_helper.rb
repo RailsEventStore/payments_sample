@@ -3,6 +3,7 @@ require_relative "../config/environment"
 require "rails/test_help"
 
 require "mutant/minitest/coverage"
+require "support/res_assertions"
 
 module ActiveSupport
   class TestCase
