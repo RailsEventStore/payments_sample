@@ -39,6 +39,16 @@ module Payments
       end
     end
 
+    test "full amount paid with multiple payments" do
+      with_aggregate("order-123") do |order|
+        order.request_payment(300)
+        order.register_payment(100)
+        order.register_payment(200)
+
+        assert order.paid?
+      end
+    end
+
     test "too much paid" do
       with_aggregate("order-123") do |order|
         order.request_payment(300)
