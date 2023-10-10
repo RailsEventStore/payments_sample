@@ -4,6 +4,7 @@ require "rails/test_help"
 
 require "mutant/minitest/coverage"
 require "support/res_assertions"
+require "support/rails_event_store"
 
 module ActiveSupport
   class TestCase
