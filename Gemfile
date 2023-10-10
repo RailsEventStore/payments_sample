@@ -28,4 +28,7 @@ group :test do
   gem "mutant-minitest", "= 0.11.22", require: false
   gem "mutant", "= 0.11.22", require: false
   gem "mutant-license", source: "https://oss:7AXfeZdAfCqL1PvHm2nvDJO6Zd9UW8IK@gem.mutant.dev"
+  gem "minitest-ruby_event_store",
+      github: "RailsEventStore/rails_event_store",
+      glob: "contrib/minitest-ruby_event_store/*.gemspec"
 end
