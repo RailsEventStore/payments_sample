@@ -1,0 +1,12 @@
+---
+includes:
+  - test
+integration:
+  name: minitest
+requires:
+  - ./config/environment
+environment_variables:
+  RAILS_ENV: test
+matcher:
+  subjects:
+    - Payments::Order
