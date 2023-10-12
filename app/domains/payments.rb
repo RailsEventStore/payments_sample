@@ -9,18 +9,18 @@ module Payments
         raise ArgumentError, "'currency' must be string" unless String === currency
 
         super(value: BigDecimal(value), currency: currency.upcase)
+      end
 
-        def +(other)
-          raise ArgumentError, "currency mismatch" if currency != other.currency
+      def +(other)
+        raise ArgumentError, "currency mismatch" if currency != other.currency
 
-          Amount.new(value + other.value, currency)
-        end
+        Amount.new(value + other.value, currency)
+      end
 
-        def >=(other)
-          raise ArgumentError, "currency mismatch" if currency != other.currency
+      def >=(other)
+        raise ArgumentError, "currency mismatch" if currency != other.currency
 
-          value >= other.value
-        end
+        value >= other.value
       end
     end
 end
