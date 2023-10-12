@@ -24,7 +24,7 @@ jobs:
           ruby-version: 3.2
           bundler-cache: true
       - name: Set up database schema
-        run: bin/rails db:setup
+        run: bin/rails db:prepare
       - name: Run tests
         run: bin/rails test
 
@@ -40,6 +40,9 @@ jobs:
         env:
           MYSQL_DATABASE: payments_sample_test
           MYSQL_ROOT_PASSWORD: secret
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: "mysql2://root:secret@127.0.0.1:3306/payments_sample_test?pool=5"
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -49,9 +52,7 @@ jobs:
           ruby-version: 3.2
           bundler-cache: true
       - name: Set up database schema
-        run: bin/rails db:setup
-      - name: Run tests
-        run: bin/rails test
+        run: bin/rails db:prepare
       - name: Mutant license check
         id: license
         run: bundle exec mutant subscription test

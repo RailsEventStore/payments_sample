@@ -157,6 +157,7 @@ GEM
       minitest (~> 5.11)
       mutant (= 0.11.22)
     mutex_m (0.1.2)
+    mysql2 (0.5.5)
     net-imap (0.4.1)
       date
       net-protocol
@@ -274,7 +275,6 @@ GEM
       railties (>= 6.0.0)
     thor (1.2.2)
     timeout (0.4.0)
-    trilogy (2.6.0)
     turbo-rails (1.5.0)
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
@@ -313,6 +313,7 @@ DEPENDENCIES
   mutant (= 0.11.22)
   mutant-license!
   mutant-minitest (= 0.11.22)
+  mysql2
   puma (>= 5.0)
   rails (~> 7.1.0)
   rails_event_store (~> 2.12.1)
@@ -321,7 +322,6 @@ DEPENDENCIES
   sprockets-rails
   stimulus-rails
   tailwindcss-rails
-  trilogy (~> 2.4)
   turbo-rails
   tzinfo-data
   web-console

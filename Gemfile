@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "rails", "~> 7.1.0"
 gem "sprockets-rails"
-gem "trilogy", "~> 2.4"
+gem "mysql2"
 gem "puma", ">= 5.0"
 gem "importmap-rails"
 gem "turbo-rails"
