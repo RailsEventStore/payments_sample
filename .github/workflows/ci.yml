@@ -1,0 +1,65 @@
+name: "Test"
+on: ['push', 'pull_request']
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        ports:
+          - "3306:3306"
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 5
+        env:
+          MYSQL_DATABASE: payments_sample_test
+          MYSQL_ROOT_PASSWORD: secret
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: "mysql2://root:secret@127.0.0.1:3306/payments_sample_test?pool=5"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+          bundler-cache: true
+      - name: Set up database schema
+        run: bin/rails db:setup
+      - name: Run tests
+        run: bin/rails test
+
+  mutant:
+    needs: test
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        ports:
+          - "3306:3306"
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 5
+        env:
+          MYSQL_DATABASE: payments_sample_test
+          MYSQL_ROOT_PASSWORD: secret
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+          bundler-cache: true
+      - name: Set up database schema
+        run: bin/rails db:setup
+      - name: Run tests
+        run: bin/rails test
+      - name: Mutant license check
+        id: license
+        run: bundle exec mutant subscription test
+        continue-on-error: true
+      - name: Run mutations
+        run: |
+          bundle exec mutant subscription test && bundle exec mutant run
+        working-directory: rails
+        if: steps.license.outcome == 'success'
+
+      
