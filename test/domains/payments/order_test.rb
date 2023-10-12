@@ -5,7 +5,7 @@ module Payments
     cover Order
 
     test "request payment" do
-      with_aggregate("order-123") { |order| order.request_payment(300) }
+      repository.with_order("order-123") { |order| order.request_payment(300) }
 
       assert_expected_events_in_stream(
         event_store,
@@ -15,7 +15,7 @@ module Payments
     end
 
     test "register payment" do
-      with_aggregate("order-123") do |order|
+      repository.with_order("order-123") do |order|
         order.request_payment(300)
         order.register_payment(300)
       end
@@ -31,7 +31,7 @@ module Payments
     end
 
     test "full amount paid" do
-      with_aggregate("order-123") do |order|
+      repository.with_order("order-123") do |order|
         order.request_payment(300)
         order.register_payment(300)
 
@@ -40,7 +40,7 @@ module Payments
     end
 
     test "full amount paid with multiple payments" do
-      with_aggregate("order-123") do |order|
+      repository.with_order("order-123") do |order|
         order.request_payment(300)
         order.register_payment(100)
         order.register_payment(200)
@@ -50,7 +50,7 @@ module Payments
     end
 
     test "too much paid" do
-      with_aggregate("order-123") do |order|
+      repository.with_order("order-123") do |order|
         order.request_payment(300)
         order.register_payment(301)
 
@@ -59,7 +59,7 @@ module Payments
     end
 
     test "too little paid" do
-      with_aggregate("order-123") do |order|
+      repository.with_order("order-123") do |order|
         order.request_payment(300)
         order.register_payment(299)
 
@@ -68,15 +68,13 @@ module Payments
     end
 
     test "payment not yet requested" do
-      with_aggregate("order-123") { |order| refute order.paid? }
+      repository.with_order("order-123") { |order| refute order.paid? }
     end
 
     private
 
-    def with_aggregate(order_id)
-      Infra::AggregateRootRepository
-        .new(event_store)
-        .with_aggregate(Order.new(order_id), "Payments::Order$#{order_id}") { |order| yield order }
+    def repository
+      OrderRepository.new(event_store)
     end
   end
 end
