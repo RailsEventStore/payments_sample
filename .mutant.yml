@@ -10,3 +10,4 @@ environment_variables:
 matcher:
   subjects:
     - Payments::Order
+    - Payments::Amount

@@ -5,7 +5,7 @@ module Payments
     cover Order
 
     test "request payment" do
-      repository.with_order("order-123") { |order| order.request_payment(300) }
+      repository.with_order("order-123") { |order| order.request_payment(Amount.new(300, "EUR")) }
 
       assert_expected_events_in_stream(
         event_store,
@@ -16,8 +16,8 @@ module Payments
 
     test "register payment" do
       repository.with_order("order-123") do |order|
-        order.request_payment(300)
-        order.register_payment(300)
+        order.request_payment(Amount.new(300, "EUR"))
+        order.register_payment(Amount.new(300, "EUR"))
       end
 
       assert_expected_events_in_stream(
@@ -32,8 +32,8 @@ module Payments
 
     test "full amount paid" do
       repository.with_order("order-123") do |order|
-        order.request_payment(300)
-        order.register_payment(300)
+        order.request_payment(Amount.new(300, "EUR"))
+        order.register_payment(Amount.new(300, "EUR"))
 
         assert order.paid?
       end
@@ -41,9 +41,9 @@ module Payments
 
     test "full amount paid with multiple payments" do
       repository.with_order("order-123") do |order|
-        order.request_payment(300)
-        order.register_payment(100)
-        order.register_payment(200)
+        order.request_payment(Amount.new(300, "EUR"))
+        order.register_payment(Amount.new(100, "EUR"))
+        order.register_payment(Amount.new(200, "EUR"))
 
         assert order.paid?
       end
@@ -51,8 +51,8 @@ module Payments
 
     test "too much paid" do
       repository.with_order("order-123") do |order|
-        order.request_payment(300)
-        order.register_payment(301)
+        order.request_payment(Amount.new(300, "EUR"))
+        order.register_payment(Amount.new(301, "EUR"))
 
         assert order.paid?
       end
@@ -60,8 +60,8 @@ module Payments
 
     test "too little paid" do
       repository.with_order("order-123") do |order|
-        order.request_payment(300)
-        order.register_payment(299)
+        order.request_payment(Amount.new(300, "EUR"))
+        order.register_payment(Amount.new(299, "EUR"))
 
         refute order.paid?
       end
@@ -69,6 +69,12 @@ module Payments
 
     test "payment not yet requested" do
       repository.with_order("order-123") { |order| refute order.paid? }
+    end
+
+    test "payment not yet requested but paid" do
+      repository.with_order("order-123") do |order|
+        assert_raises(Order::PaymentNotRequestedYet) { order.register_payment(Amount.new(300, "EUR")) }
+      end
     end
 
     private
