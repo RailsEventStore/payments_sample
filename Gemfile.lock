@@ -10,7 +10,6 @@ GEM
   remote: https://oss:7AXfeZdAfCqL1PvHm2nvDJO6Zd9UW8IK@gem.mutant.dev/
   specs:
     ast (2.4.2)
-    diff-lcs (1.5.0)
     mutant-license (0.1.1.2.1627430819213747598431630701693729869473.6)
     parser (3.2.2.4)
       ast (~> 2.4.1)
@@ -124,6 +123,7 @@ GEM
     debug (1.8.0)
       irb (>= 1.5.0)
       reline (>= 0.3.1)
+    diff-lcs (1.5.0)
     drb (2.1.1)
       ruby2_keywords
     erubi (1.12.0)
