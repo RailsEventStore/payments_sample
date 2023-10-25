@@ -10,4 +10,5 @@ environment_variables:
 matcher:
   subjects:
     - Payments::Order
+    - Payments::OrderRepository
     - Payments::Amount

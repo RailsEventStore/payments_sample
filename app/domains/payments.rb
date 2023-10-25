@@ -1,6 +1,16 @@
 module Payments
-  PaymentRequested = Class.new(RailsEventStore::Event)
-  PaymentRegistered = Class.new(RailsEventStore::Event)
+  PaymentRequested =
+    Data.define(:order_id, :amount) do
+      def event_type
+        self.class.name
+      end
+    end
+  PaymentRegistered =
+    Data.define(:order_id, :amount) do
+      def event_type
+        self.class.name
+      end
+    end
 
   Amount =
     Data.define(:value, :currency) do
